@@ -1,0 +1,163 @@
+<!-- This program is a realtime intelligence test
+Copyright (C) september 2009 , Didier Rabiat-Blanchard   didier_rabiat@razorcam.com 
+
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Intelligence test</title></head>
+<body onLoad="initia()">
+
+<SCRIPT language=javascript>
+//FIXME sauvegarde de DTM  et de la bande de départ pour pouvoir y rejouer depuis le début , 80 instructions semble bien
+//FIXME test suite dont test que génération aléatoire au départ est ok, notamment vérifier que pas de valeur "out of bounds" générée
+//FIXME offir choix entre plusieurs générateurs de programmes possibles, voir fichier programme carrément comme pour IA 
+	//important pour les suites de problemes tous faits come dans un test QI, avec solutions en vidéo
+//TODO: utiliser document.write pour écrire un tableau de taille dynamique
+		//document.location.search donne ?5
+		//un parseInt de ?5 devrait suffire
+//TODO bouton reset des parametres experts , shift-reload marche quand meme actuellement ainsi que enter dans url
+//TODO  barre colorée du temps restant qui raccourcit
+//TODO changer nombre de cases GUI via génération du tableau par JS
+//TODO détecter univers bloqué (ne change pas d'état entre 2 slices) et le relancer auto si on est au début , et terminer prématurément si on est en cours de jeu avec alert() 
+//TODO: option pour éliminer les DTMs qui "bougent pas" = semblent mortes
+//TODO MAPPING touches du clavier qsdf, jklm, et barre espace pour case avec le curseur 
+//TODO: reprise apres arret,  sauvegarde et load de parties 
+// TODO pouvoir visualiser DTM et tape et etats en temps reeels ou via logs/replays
+//TODO fonction start appelée par un bouton qui lance initialisation puis la DTM et qui commence par nb_etats=ff.nb_etats.value;taille_tape=ff.taille_tape.value;nb_executions=ff.nb_executions.value;slice=ff.slice.value
+	//utilsier getElementByID sinon on a warnings
+//done nsUpdateService pas implémenté par iceweasel probablement 
+	var i
+	var blanc="white"
+	var noir="black"
+	var titi=document.getElementById(i)
+	const taille_cote=4
+	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
+	var nouv_depla,nouv_etats,etat,tape,timer,score
+  function initia(){
+	 nb_etats=parseInt(document.getElementById("et").value);taille_tape=parseInt(document.getElementById("t").value);nb_executions=parseInt(document.getElementById("ex").value);slice=slice2=parseInt(document.getElementById("s").value)//temps en ms de la slice
+		compte=parseInt(document.getElementById("c").value);nb_depla=parseInt(document.getElementById("d").value)
+		//const nb_etats=100,taille_tape=17,taille_cote=4,nb_executions=50,slice=1000     TOP on peut bloquer la situation via un carré
+		//const nb_etats=100,taille_tape=17,taille_cote=4,nb_executions=100,slice=750    PAS MAL ON A DU CONTROLE ET CA VIT 
+		//const nb_etats=100,taille_tape=17,taille_cote=4,nb_executions=10,slice=1000    WOW bloquage plus facile je crois TOP
+	if (taille_tape<nb_depla) {alert("variables<amplitude");return}
+	if (nb_etats<3)  {alert("instructions<3");return}
+	 nouv_depla=new Array(nb_etats,2),nouv_etats=new Array(nb_etats,2) //  index= etat,caractere    contenu =  valeur à écrire si négative on se déplace à gauche     
+	 etat=0,offset=0,valeur=0
+	 tape=new Array(taille_tape) //dont cote^2 cases sont mappées dans la GUI , initialisation à zero done later indeed
+	// alert(tape[10]) undefined
+	//on initialise les regles via random qui donne nombre entre zero et un ....
+	for (i=0;i<nb_etats;i++) {nouv_etats[i,0]=Math.floor(Math.random()*(nb_etats-1.000000001));if (nouv_etats[i,0]==i) nouv_etats[i,0]=nb_etats-1; nouv_etats[i,1]=Math.floor(Math.random()*(nb_etats-2.000000001)); if (nouv_etats[i,1]==i) nouv_etats[i,1]=nb_etats-1; nouv_depla[i,0]=Math.ceil(Math.random()*(nb_depla-1)); nouv_depla[i,1]=Math.ceil(Math.random()*(nb_depla-1));} // (int) is not defined
+	for (i=0;i<taille_tape;i++) tape[i]=Math.round(Math.random());  //initialisation à random  de la tape
+	//affichage de la tape
+	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) document.getElementById(i).bgColor="green" ;else document.getElementById(i).bgColor="red"
+	for (i=(taille_cote*taille_cote)/2;i<(taille_cote*taille_cote);i++) if (tape[i]==0) document.getElementById(i).bgColor="black" ;else document.getElementById(i).bgColor="white"
+	clearInterval(timer)
+    timer=setInterval("Horloge()", slice) 
+}//fin fucntion initia()
+   function Horloge() {
+//       var dt=new Date()
+//     window.status=dt.getHours()+":"+dt.getMinutes()+":"+dt.getSeconds()
+// on respecte la fiche tableau_dtm
+//NOW on recopie la PARTIE SUPERIEURE de la GUI dans la tape
+//TODO POUR CELA on pourra peut-etre fabriquer le tableau entierement en JS...
+//for(i=(taille_cote*taille_cote)/2;i++;i<taille_cote*taille_cote)
+// on exécute nb_executions fois la DTM
+	for (i=0;i<nb_executions;i++){
+		//d'abord on stocke la valeur courante en case offset
+		var valeur=tape[offset]
+		//ensuite on écrit la nouvelle valeur sauf si on est dans les actions de la GUI
+		//if(offset<((taille_cote*taille_cote)/2)) tape[offset]=regles[etat,valeur]  
+		if((offset<((taille_cote*taille_cote)/2))||(offset>=(taille_cote*taille_cote)) ) tape[offset]=1-tape[offset] //on flippe
+		//if(offset>=(taille_cote*taille_cote)) tape[offset]=regles[etat,valeur]   //on aurait pu faire un OU 
+		//ensuite on se déplace de maniere absolue pour voir
+		offset+=nouv_depla[etat,valeur]
+		if (offset>=taille_tape) offset-=taille_tape //modulo quoi
+		//enfin on change d'état
+		etat=nouv_etats[etat,valeur]
+		//if (i==9) alert("valeur="+valeur+"etat="+etat+"offset="+offset) // EBUG 
+	}//fin for
+	score=0
+	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++} else document.getElementById(i).bgColor="red"
+	//maintenant on decompte le compte à rebours
+	compte--
+	//on affiche le compte
+	document.getElementById("l").value=compte
+	//et le socre
+	document.getElementById("sc").value=score
+if (!compte) {clearInterval(timer); alert("game over! your score is "+score) }
+	var slice3=parseInt(document.getElementById("s").value)
+	if ((slice3<slice)&&(slice3!=slice2)) {slice2=slice3; 	clearInterval(timer);    timer=setInterval("Horloge()", slice3) }
+
+   }//fin body de la fonction Horloge()
+
+   
+</SCRIPT>
+<h2 align="center">Intelligence test</h2>
+<A href='javascript:initia()'>Cliquer ici pour recommencer le jeu</A>
+<p>
+<form>
+Compte à rebours:  <INPUT type="text" value="0" id="l">
+Score: <INPUT type="text" value="0" id="sc">
+</form>
+<table id="table" align="center" bgcolor="#808080" border="5" 
+bordercolor="#000000" cellpadding="0" cellspacing="3" height="400" 
+width="400">
+    <tbody><tr>
+            <td   id=0>&nbsp;
+</td>
+<td id=1>&nbsp;</td>
+      <td  id=2>&nbsp;</td>
+      <td  id=3>&nbsp;</td>
+     
+    </tr>
+    <tr>
+      <td  id=4>&nbsp;</td>
+      <td  id=5>&nbsp;</td>
+      <td  id=6>&nbsp;</td>
+      <td  id=7>&nbsp;</td>
+    
+    </tr>
+    <tr>
+	    <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=8>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=9>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=10>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" bgcolor="" id=11>&nbsp;</td>
+     
+    </tr>
+    <tr>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=12>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=13>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=14>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" bgcolor="" id=15>&nbsp;</td>
+     
+    </tr>
+
+</tbody></table>
+
+<hr>
+
+Réglages optionels pour les experts avant de recommencer le jeu: <p>
+<form name="ff">
+Nombre de variables du programme: <INPUT type="text" value="20" name="taille_tape" id="t">
+   Temps entre deux exécutions en millisecondes: <INPUT type="text" value="1000" name="slice" id="s"> <p>
+Nombre d'instructions du programme (>2) : <INPUT type="text" value="5" name="nb_etats" id="et"> 
+Nombre d'instructions exécutées à la suite: <INPUT type="text" value="1" name="nb_executions" id="ex"><p>
+Fichier Intelligence Artificielle: <INPUT type="text" value="" name="fic_IA">
+Compte à rebours en nombre d'exécutions: <INPUT type="text" value="400" id="c"> <p>
+Amplitude maximale des déplacements dans le tableau des variables (<=variables)  : <INPUT type="text" value="20" id="d"> <p>
+
+</form>
+
+</body></html>

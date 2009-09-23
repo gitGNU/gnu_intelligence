@@ -16,7 +16,7 @@ This program is free software: you can redistribute it and/or modify
 -->
 <html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Intelligence test</title></head>
+<title>Intelligence puzzle</title></head>
 <body onLoad="initia()">
 
 <SCRIPT language=javascript>
@@ -104,11 +104,11 @@ if (!compte) {clearInterval(timer); alert("game over! your score is "+score) }
 
    
 </SCRIPT>
-<h2 align="center">Intelligence test</h2>
-<A href='javascript:initia()'>Cliquer ici pour recommencer le jeu</A>
+<!-- <h2 align="center">Intelligence puzzle</h2> -->
+<A href='javascript:initia()'>Click here to start a new game</A>
 <p>
 <form>
-Compte à rebours:  <INPUT type="text" value="0" id="l">
+Countdown:  <INPUT type="text" value="0" id="l">
 Score: <INPUT type="text" value="0" id="sc">
 </form>
 <table id="table" align="center" bgcolor="#808080" border="5" 
@@ -148,15 +148,14 @@ width="400">
 
 <hr>
 
-Réglages optionels pour les experts avant de recommencer le jeu: <p>
+Options that experts can change before a new game: <p>
 <form name="ff">
-Nombre de variables du programme: <INPUT type="text" value="20" name="taille_tape" id="t">
-   Temps entre deux exécutions en millisecondes: <INPUT type="text" value="1000" name="slice" id="s"> <p>
-Nombre d'instructions du programme (>2) : <INPUT type="text" value="5" name="nb_etats" id="et"> 
-Nombre d'instructions exécutées à la suite: <INPUT type="text" value="1" name="nb_executions" id="ex"><p>
-Fichier Intelligence Artificielle: <INPUT type="text" value="" name="fic_IA">
-Compte à rebours en nombre d'exécutions: <INPUT type="text" value="400" id="c"> <p>
-Amplitude maximale des déplacements dans le tableau des variables (<=variables)  : <INPUT type="text" value="20" id="d"> <p>
+Number of variables of the environment: <INPUT type="text" value="20" name="taille_tape" id="t">
+   Pause between two executions of the environment in milliseconds: <INPUT type="text" value="1000" name="slice" id="s"> <p>
+Number of instructions of the environment (>2) : <INPUT type="text" value="5" name="nb_etats" id="et"> 
+Nomber of instructions executed after each pause: <INPUT type="text" value="1" name="nb_executions" id="ex"><p>
+Countdown in number of executions: <INPUT type="text" value="400" id="c"> <p>
+Maximum move possible in the array of variables (<=variables)  : <INPUT type="text" value="20" id="d"> <p>
 
 </form>
 

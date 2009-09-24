@@ -45,6 +45,7 @@ This program is free software: you can redistribute it and/or modify
 	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
 	var nouv_depla,nouv_etats,etat,tape,timer,score
   function initia(){
+		clearInterval(timer)
 	 nb_etats=parseInt(document.getElementById("et").value);taille_tape=parseInt(document.getElementById("t").value);nb_executions=parseInt(document.getElementById("ex").value);slice=slice2=parseInt(document.getElementById("s").value)//temps en ms de la slice
 		compte=parseInt(document.getElementById("c").value);nb_depla=parseInt(document.getElementById("d").value)
 		//const nb_etats=100,taille_tape=17,taille_cote=4,nb_executions=50,slice=1000     TOP on peut bloquer la situation via un carré
@@ -62,10 +63,11 @@ This program is free software: you can redistribute it and/or modify
 	//affichage de la tape
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) document.getElementById(i).bgColor="green" ;else document.getElementById(i).bgColor="red"
 	for (i=(taille_cote*taille_cote)/2;i<(taille_cote*taille_cote);i++) if (tape[i]==0) document.getElementById(i).bgColor="black" ;else document.getElementById(i).bgColor="white"
-	clearInterval(timer)
-    timer=setInterval("Horloge()", slice) 
+	    timer=setInterval("Horloge()", slice) 
 }//fin fucntion initia()
    function Horloge() {
+	clearInterval(timer)
+
 //       var dt=new Date()
 //     window.status=dt.getHours()+":"+dt.getMinutes()+":"+dt.getSeconds()
 // on respecte la fiche tableau_dtm
@@ -95,9 +97,10 @@ This program is free software: you can redistribute it and/or modify
 	document.getElementById("l").value=compte
 	//et le socre
 	document.getElementById("sc").value=score
-if (!compte) {clearInterval(timer); alert("game over! your score is "+score) }
+if (!compte) {alert("game over! your score is "+score) ; return}
 	var slice3=parseInt(document.getElementById("s").value)
-	if ((slice3<slice)&&(slice3!=slice2)) {slice2=slice3; 	clearInterval(timer);    timer=setInterval("Horloge()", slice3) }
+	if ((slice3<slice)&&(slice3!=slice2)) slice2=slice3
+	 imer=setInterval("Horloge()", slice2) 
 
    }//fin body de la fonction Horloge()
 

@@ -60,9 +60,13 @@ This program is free software: you can redistribute it and/or modify
 	if (taille_tape<nb_depla) {alert("variables<maximum move");return}
 	if (nb_etats<1)  {alert("instructions<1");return}
 	if (gen==1) {nb=nb_buttons ; nd=Math.pow(2,nb_green)} else {nb=2;nd=nb_depla}
-	if (gen==2) nouv_depla=new Array(nb_etats,Math.pow(2,nb))
+	//if (gen==2) nouv_depla=new Array(nb_etats,Math.pow(2,nb))
+	if (gen==2) {nouv_depla=new Array(nb_etats); for (i=0;i<nb_etats;i++) nouv_depla[i]=new Array(Math.pow(2,nb))
+
+	}//if gen==2
 	if (gen==1) aff=new Array(nb_etats)
-	nouv_etats=new Array(nb_etats,Math.pow(2,nb))
+	//nouv_etats=new Array(nb_etats,Math.pow(2,nb))
+	nouv_etats=new Array(nb_etats); for (i=0;i<nb_etats;i++) nouv_etats[i]=new Array(Math.pow(2,nb))
 	 etat=0,offset=0
 	 tape=new Array(taille_tape) //dont cote^2 cases sont mappées dans la GUI , initialisation à zero done later indeed
 	// alert(tape[10]) undefined
@@ -105,10 +109,10 @@ This program is free software: you can redistribute it and/or modify
 			for(j=nb_green-1;j>=0;j--) {if (tmp-Math.pow(2,j)>=0) {tmp-=Math.pow(2,j); tape[j]=1} else  tape[j]=0}
 			}//end if (gen==1) 
 		//ensuite on se déplace de maniere absolue pour voir
-		if (gen==2) offset+=nouv_depla[etat,valeur]
+		if (gen==2) offset+=nouv_depla[etat][valeur]
 		if (gen==2) if (offset>=taille_tape) offset-=taille_tape //modulo quoi
 		//enfin on change d'état
-		etat=nouv_etats[etat,valeur]
+		etat=nouv_etats[etat][valeur]
 		//if (i==9) alert("valeur="+valeur+"etat="+etat+"offset="+offset) // EBUG 
 	}//fin for
 	score=0

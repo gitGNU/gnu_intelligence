@@ -38,11 +38,11 @@ This program is free software: you can redistribute it and/or modify
 //TODO fonction start appelée par un bouton qui lance initialisation puis la DTM et qui commence par nb_etats=ff.nb_etats.value;taille_tape=ff.taille_tape.value;nb_executions=ff.nb_executions.value;slice=ff.slice.value
 	//utilsier getElementByID sinon on a warnings
 //done nsUpdateService pas implémenté par iceweasel probablement 
-	var i,nb //loop indice and number of effective buttons
+	var i,j,nb,nd //loop indices and number of effective buttons and of displays/displacements
 	var blanc="white",noir="black"
 	const taille_cote=4, nb_buttons=8, nb_green=8 //TODO make them parameters in the GUI
 	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
-	var nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen
+	var nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen //gen #1 is the new easy one
 //IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
   function initia(){
 		clearInterval(timer)
@@ -55,17 +55,14 @@ This program is free software: you can redistribute it and/or modify
 		//const nb_etats=100,taille_tape=17,taille_cote=4,nb_executions=10,slice=1000    WOW bloquage plus facile je crois TOP
 	if (taille_tape<nb_depla) {alert("variables<maximum move");return}
 	if (nb_etats<1)  {alert("instructions<1");return}
-	//FIXME si on dit que gen2 utilsie 1 seul bouton on a structure similaire
-	if (gen==1) nb=nb_buttons ; else nb=1
-	if (gen==2) {nouv_depla=new Array(nb_etats,2),nouv_etats=new Array(nb_etats,2)} //  index= etat,caractere    contenu =  valeur à écrire si négative on se déplace à gauche     
-	else {nouv_depla=new Array(nb_etats,2^nb_buttons),nouv_etats=new Array(nb_etats,2^nb_buttons)} 
-
+	if (gen==1) {nb=nb_buttons ; nd=Math.pow(2,nb_green)} else {nb=2;nd=nb_depla}
+	nouv_depla=new Array(nb_etats,Math.pow(2,nb)),nouv_etats=new Array(nb_etats,Math.pow(2,nb))
 	 etat=0,offset=0,valeur=0
 	 tape=new Array(taille_tape) //dont cote^2 cases sont mappées dans la GUI , initialisation à zero done later indeed
 	// alert(tape[10]) undefined
 	//on initialise les regles via random qui donne nombre entre zero et un ....
 	if (nb_etats==1) dec=1; else dec=1.000000001
-	for (i=0;i<nb_etats;i++) {nouv_etats[i,0]=Math.floor(Math.random()*(nb_etats-dec));if (nouv_etats[i,0]==i) nouv_etats[i,0]=nb_etats-1; nouv_etats[i,1]=Math.floor(Math.random()*(nb_etats-dec)); if (nouv_etats[i,1]==i) nouv_etats[i,1]=nb_etats-1; nouv_depla[i,0]=Math.ceil(Math.random()*(nb_depla-1)); nouv_depla[i,1]=Math.ceil(Math.random()*(nb_depla-1));} // (int) is not defined
+	for (i=0;i<nb_etats;i++) for (j=0;j<Math.pow(2,nb);j++) {nouv_etats[i,j]=Math.floor(Math.random()*(nb_etats-dec));if (nouv_etats[i,j]==i) nouv_etats[i,j]=nb_etats-1; nouv_depla[i,j]=Math.ceil(Math.random()*(nd-1)) } // (int) is not defined
 	for (i=0;i<taille_tape;i++) tape[i]=Math.round(Math.random());  //initialisation à random  de la tape
 	//affichage de la tape
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) document.getElementById(i).bgColor="green" ;else document.getElementById(i).bgColor="red"
@@ -159,7 +156,7 @@ width="400">
 
 Options that experts can change before a new game: <p>
 <form name="ff">
-Random environment generator # (1 or 2): <INPUT type="text" value="1" name="gen" id="g"> <p>
+Random environment generator # (1 or 2): <INPUT type="text" value="2" name="gen" id="g"> <p> <!-- TODO gen easy 1 should be default -->
    Pause between two executions of the environment in milliseconds: <INPUT type="text" value="1000" name="slice" id="s"> <p>
 Number of instructions of the environment (>0) : <INPUT type="text" value="5" name="nb_etats" id="et"> 
 Nomber of instructions executed after each pause: <INPUT type="text" value="1" name="nb_executions" id="ex"><p>

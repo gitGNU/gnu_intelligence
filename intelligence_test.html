@@ -126,7 +126,7 @@ This program is free software: you can redistribute it and/or modify
 	document.getElementById("sc").value=score
 if (!compte) {alert("game over! your score is "+score) ; return}
 	var slice3=parseInt(document.getElementById("s").value)
-	if (slice3<=slice) slice2=slice3; else slice2=slice
+	if ((slice3<=slice)&&(slice3>0)) slice2=slice3; else slice2=slice
 	timer=setInterval("Horloge()", slice2) 
 
    }//fin body de la fonction Horloge()

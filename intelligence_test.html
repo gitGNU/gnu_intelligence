@@ -20,9 +20,9 @@ This program is free software: you can redistribute it and/or modify
 <body onLoad="initia()">
 
 <SCRIPT>
-//FIXME sauvegarde de DTM  et de la bande de départ pour pouvoir y rejouer depuis le début , 80 instructions semble bien
 //FIXME test suite dont test que génération aléatoire au départ est ok, notamment vérifier que pas de valeur "out of bounds" générée
-//FIXME offir choix entre plusieurs générateurs de programmes possibles, voir fichier programme carrément comme pour IA 
+//TODO sauvegarde de DTM  et de la bande de départ pour pouvoir y rejouer depuis le début , 80 instructions semble bien
+//TODO offrir générateurs de programmes sous forme de fichier programme carrément comme pour IA 
 	//important pour les suites de problemes tous faits come dans un test QI, avec solutions en vidéo
 //TODO: utiliser document.write pour écrire un tableau de taille dynamique
 		//document.location.search donne ?5
@@ -38,9 +38,9 @@ This program is free software: you can redistribute it and/or modify
 //TODO fonction start appelée par un bouton qui lance initialisation puis la DTM et qui commence par nb_etats=ff.nb_etats.value;taille_tape=ff.taille_tape.value;nb_executions=ff.nb_executions.value;slice=ff.slice.value
 	//utilsier getElementByID sinon on a warnings
 //done nsUpdateService pas implémenté par iceweasel probablement 
-	var i
+	var i,nb //loop indice and number of effective buttons
 	var blanc="white",noir="black"
-	const taille_cote=4, nb_buttons=8, nb_green=8
+	const taille_cote=4, nb_buttons=8, nb_green=8 //TODO make them parameters in the GUI
 	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
 	var nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen
 //IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
@@ -55,8 +55,11 @@ This program is free software: you can redistribute it and/or modify
 		//const nb_etats=100,taille_tape=17,taille_cote=4,nb_executions=10,slice=1000    WOW bloquage plus facile je crois TOP
 	if (taille_tape<nb_depla) {alert("variables<maximum move");return}
 	if (nb_etats<1)  {alert("instructions<1");return}
+	//FIXME si on dit que gen2 utilsie 1 seul bouton on a structure similaire
+	if (gen==1) nb=nb_buttons ; else nb=1
 	if (gen==2) {nouv_depla=new Array(nb_etats,2),nouv_etats=new Array(nb_etats,2)} //  index= etat,caractere    contenu =  valeur à écrire si négative on se déplace à gauche     
-	else {nouv_depla=new Array(nb_etats,2),nouv_etats=new Array(nb_etats,2)} // taille dépend nombre de boutons FIXME
+	else {nouv_depla=new Array(nb_etats,2^nb_buttons),nouv_etats=new Array(nb_etats,2^nb_buttons)} 
+
 	 etat=0,offset=0,valeur=0
 	 tape=new Array(taille_tape) //dont cote^2 cases sont mappées dans la GUI , initialisation à zero done later indeed
 	// alert(tape[10]) undefined

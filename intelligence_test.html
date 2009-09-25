@@ -20,6 +20,8 @@ This program is free software: you can redistribute it and/or modify
 <body onLoad="initia()">
 
 <SCRIPT>
+//areter d'utilsoer nouv_depla dans gen1, utilise aff[] plutot
+//FIXME: fonctions init_gen1, init_gen2, horloge_gen1 horloge_gen2
 //FIXME test suite dont test que génération aléatoire au départ est ok, notamment vérifier que pas de valeur "out of bounds" générée
 //TODO sauvegarde de DTM  et de la bande de départ pour pouvoir y rejouer depuis le début , 80 instructions semble bien
 //TODO offrir générateurs de programmes sous forme de fichier programme carrément comme pour IA 
@@ -42,7 +44,7 @@ This program is free software: you can redistribute it and/or modify
 	var blanc="white",noir="black"
 	const taille_cote=4, nb_buttons=8, nb_green=8 //TODO make them parameters in the GUI
 	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
-	var nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen //gen #1 is the new easy one
+	var aff,nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen //gen #1 is the new easy one
 //IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
   function initia(){
 		clearInterval(timer)
@@ -56,13 +58,18 @@ This program is free software: you can redistribute it and/or modify
 	if (taille_tape<nb_depla) {alert("variables<maximum move");return}
 	if (nb_etats<1)  {alert("instructions<1");return}
 	if (gen==1) {nb=nb_buttons ; nd=Math.pow(2,nb_green)} else {nb=2;nd=nb_depla}
-	nouv_depla=new Array(nb_etats,Math.pow(2,nb)),nouv_etats=new Array(nb_etats,Math.pow(2,nb))
-	 etat=0,offset=0,valeur=0
+	if (gen==2) nouv_depla=new Array(nb_etats,Math.pow(2,nb))
+	if (gen==1) aff=new Array(nb_etats)
+	nouv_etats=new Array(nb_etats,Math.pow(2,nb))
+	 etat=0,offset=0
 	 tape=new Array(taille_tape) //dont cote^2 cases sont mappées dans la GUI , initialisation à zero done later indeed
 	// alert(tape[10]) undefined
 	//on initialise les regles via random qui donne nombre entre zero et un ....
 	if (nb_etats==1) dec=1; else dec=1.000000001
-	for (i=0;i<nb_etats;i++) for (j=0;j<Math.pow(2,nb);j++) {nouv_etats[i,j]=Math.floor(Math.random()*(nb_etats-dec));if (nouv_etats[i,j]==i) nouv_etats[i,j]=nb_etats-1; nouv_depla[i,j]=Math.ceil(Math.random()*(nd-1)) } // (int) is not defined
+	for (i=0;i<nb_etats;i++) {
+		if (gen==1) aff[i]=Math.floor(Math.random()*nd-1.000000001)
+		for (j=0;j<Math.pow(2,nb);j++) {nouv_etats[i,j]=Math.floor(Math.random()*(nb_etats-dec));if (nouv_etats[i,j]==i) nouv_etats[i,j]=nb_etats-1; if (gen==2) nouv_depla[i,j]=Math.ceil(Math.random()*(nd-1)) } // (int) is not defined
+	}//end for i
 	for (i=0;i<taille_tape;i++) tape[i]=Math.round(Math.random());  //initialisation à random  de la tape
 	//affichage de la tape
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) document.getElementById(i).bgColor="green" ;else document.getElementById(i).bgColor="red"
@@ -92,7 +99,7 @@ This program is free software: you can redistribute it and/or modify
 			for(j=0;j<nb;j++) valeur+=Math.pow(2,j)*tape[nb_green+j]
 		//puis il s'agit de convertir un entier à afficher en bits via une boucle
 		//pour cela tmp va recevoir l'entier à afficher puis on va lui retrancher des pusisances de 2 quand il les possede
-			var tmp=nouv_depla[etat,valeur]
+			var tmp=aff[etat] //on affiche toujours la meme chose dans chaque état
 			for(j=nb_green-1;j>=0;j--) {if (tmp-Math.pow(2,j)>=0) {tmp-=Math.pow(2,j); tape[j]=1} else  tape[j]=0}
 			}//end if (gen==1) 
 		//ensuite on se déplace de maniere absolue pour voir

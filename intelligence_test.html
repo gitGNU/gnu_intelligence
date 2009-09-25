@@ -22,6 +22,7 @@ This program is free software: you can redistribute it and/or modify
 <SCRIPT>
 //FIXME: array à 2 dimension à initialiser via une boucle
 //FIXME: fonctions init_gen1, init_gen2, horloge_gen1 horloge_gen2 et TESTS UNITAIRES 
+//TODO race condition possible quand on clique sur "start a new game" 
 //TODO: commencer horloge() par changement d'état en fonction des boutons de facon à réduire leur latence
 //FIXME test suite dont test que génération aléatoire au départ est ok, notamment vérifier que pas de valeur "out of bounds" générée
 //FIXME random mal utilisé car -1.0001 peut donner nombre négatifs .... absolute value peut -etre peut aider avant le floor()
@@ -182,7 +183,7 @@ width="400">
 Options that experts can change before a new game: <p>
 <form name="ff">
 Random environment generator # (1 or 2): <INPUT type="text" value="2" name="gen" id="g"> <p> <!-- TODO gen easy 1 should be default -->
-   Pause between two executions of the environment in milliseconds: <INPUT type="text" value="1000" name="slice" id="s"> <p>
+   Pause between two executions of the environment in milliseconds: <INPUT type="text" value="2000" name="slice" id="s"> <p>
 Number of instructions of the environment (>0) : <INPUT type="text" value="1" name="nb_etats" id="et"> <p>
 Nomber of instructions executed after each pause: <INPUT type="text" value="1" name="nb_executions" id="ex"><p>
 Countdown in number of executions: <INPUT type="text" value="400" id="c"> <p>

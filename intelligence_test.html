@@ -100,10 +100,11 @@ This program is free software: you can redistribute it and/or modify
 		//ensuite on écrit la nouvelle valeur sauf si on est dans les actions de la GUI
 		//if(offset<((taille_cote*taille_cote)/2)) tape[offset]=regles[etat,valeur]  
 		if (gen==2) if ((offset<((taille_cote*taille_cote)/2))||(offset>=(taille_cote*taille_cote)) ) tape[offset]=1-tape[offset] //on flippe
-		//FIXME si gen est 1 on met en place la eprception prébvue dans le tableau deplacement 
+		//si gen est 1 on met en place la eprception prébvue dans le tableau deplacement 
 		//il s'agit d'obtenir un entier valeur à partir des boutons via une boucle
 		if (gen==1) { valeur=0
 			for(j=0;j<nb;j++) valeur+=Math.pow(2,j)*tape[nb_green+j]
+		etat=nouv_etats[etat][valeur] //on peut alors changer d'état
 		//puis il s'agit de convertir un entier à afficher en bits via une boucle
 		//pour cela tmp va recevoir l'entier à afficher puis on va lui retrancher des pusisances de 2 quand il les possede
 			var tmp=aff[etat] //on affiche toujours la meme chose dans chaque état
@@ -112,8 +113,8 @@ This program is free software: you can redistribute it and/or modify
 		//ensuite on se déplace de maniere absolue pour voir
 		if (gen==2) offset+=nouv_depla[etat][valeur]
 		if (gen==2) if (offset>=taille_tape) offset-=taille_tape //modulo quoi
-		//enfin on change d'état
-		etat=nouv_etats[etat][valeur]
+		//enfin on change d'état en gen 2
+		if (gen==2) etat=nouv_etats[etat][valeur]
 		//if (i==9) alert("valeur="+valeur+"etat="+etat+"offset="+offset) // EBUG 
 	}//fin for
 	score=0
@@ -182,11 +183,11 @@ Options that experts can change before a new game: <p>
 <form name="ff">
 Random environment generator # (1 or 2): <INPUT type="text" value="2" name="gen" id="g"> <p> <!-- TODO gen easy 1 should be default -->
    Pause between two executions of the environment in milliseconds: <INPUT type="text" value="1000" name="slice" id="s"> <p>
-Number of instructions of the environment (>0) : <INPUT type="text" value="5" name="nb_etats" id="et"> <p>
+Number of instructions of the environment (>0) : <INPUT type="text" value="1" name="nb_etats" id="et"> <p>
 Nomber of instructions executed after each pause: <INPUT type="text" value="1" name="nb_executions" id="ex"><p>
 Countdown in number of executions: <INPUT type="text" value="400" id="c"> <p>
-Number of variables created by generator #2: <INPUT type="text" value="20" name="taille_tape" id="t"><p>
-Maximum move possible in this array of variables (<=variables)  : <INPUT type="text" value="20" id="d"> <p>
+Number of variables created by generator #2: <INPUT type="text" value="16" name="taille_tape" id="t"><p>
+Maximum move possible in this array of variables (<=variables)  : <INPUT type="text" value="16" id="d"> <p>
 
 </form>
 <p>

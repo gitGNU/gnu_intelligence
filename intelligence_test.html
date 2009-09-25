@@ -59,6 +59,7 @@ This program is free software: you can redistribute it and/or modify
 		//const nb_etats=100,taille_tape=17,taille_cote=4,nb_executions=10,slice=1000    WOW bloquage plus facile je crois TOP
 	if (taille_tape<nb_depla) {alert("variables<maximum move");return}
 	if (nb_etats<1)  {alert("instructions<1");return}
+	if ((gen<1)||(gen>2))  {alert("unknown generator");return}
 	if (gen==1) {nb=nb_buttons ; nd=Math.pow(2,nb_green)} else {nb=2;nd=nb_depla}
 	//if (gen==2) nouv_depla=new Array(nb_etats,Math.pow(2,nb))
 	if (gen==2) {nouv_depla=new Array(nb_etats); for (i=0;i<nb_etats;i++) nouv_depla[i]=new Array(Math.pow(2,nb))

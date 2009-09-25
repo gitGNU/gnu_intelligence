@@ -80,19 +80,20 @@ This program is free software: you can redistribute it and/or modify
 //for(i=(taille_cote*taille_cote)/2;i++;i<taille_cote*taille_cote)
 // on exécute nb_executions fois la DTM
 	for (i=0;i<nb_executions;i++){
+		var valeur
 		//d'abord on stocke la valeur courante en case offset
-		if (gen==2) var valeur=tape[offset]
+		if (gen==2) valeur=tape[offset]
 		//ensuite on écrit la nouvelle valeur sauf si on est dans les actions de la GUI
 		//if(offset<((taille_cote*taille_cote)/2)) tape[offset]=regles[etat,valeur]  
 		if (gen==2) if ((offset<((taille_cote*taille_cote)/2))||(offset>=(taille_cote*taille_cote)) ) tape[offset]=1-tape[offset] //on flippe
 		//FIXME si gen est 1 on met en place la eprception prébvue dans le tableau deplacement 
-		//il s'agit d'obtenir un entier percep à partir des boutons via une boucle
-		if (gen==1) { var percep=0
-			for(j=0;j<nb;j++) percep+=Math.pow(2,j)*tape[nb_green+j]
+		//il s'agit d'obtenir un entier valeur à partir des boutons via une boucle
+		if (gen==1) { valeur=0
+			for(j=0;j<nb;j++) valeur+=Math.pow(2,j)*tape[nb_green+j]
 		//puis il s'agit de convertir un entier à afficher en bits via une boucle
 		//pour cela tmp va recevoir l'entier à afficher puis on va lui retrancher des pusisances de 2 quand il les possede
-			var tmp=nouv_depla[etat,percep]
-			for(j=nb_green-1;j>=0;j--) {if (tmp-Math.pow(2,j)>=0) {tmp-=Math.pow(2,j); tape[nb_green+j]=1} else  tape[nb_green+j]=0}
+			var tmp=nouv_depla[etat,valeur]
+			for(j=nb_green-1;j>=0;j--) {if (tmp-Math.pow(2,j)>=0) {tmp-=Math.pow(2,j); tape[j]=1} else  tape[j]=0}
 			}//end if (gen==1) 
 		//ensuite on se déplace de maniere absolue pour voir
 		if (gen==2) offset+=nouv_depla[etat,valeur]
@@ -102,7 +103,7 @@ This program is free software: you can redistribute it and/or modify
 		//if (i==9) alert("valeur="+valeur+"etat="+etat+"offset="+offset) // EBUG 
 	}//fin for
 	score=0
-	//now we display the green/red squares:
+	//now we display the green/red squares while updating the score:
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++} else document.getElementById(i).bgColor="red"
 	//maintenant on decompte le compte à rebours
 	compte--

@@ -44,9 +44,9 @@ This program is free software: you can redistribute it and/or modify
 	//utilsier getElementByID sinon on a warnings
 //done nsUpdateService pas implémenté par iceweasel probablement 
 	var i,j,nb,nd //loop indices and number of effective buttons and of displays/displacements
-	var blanc="white",noir="black"
+	const blanc="white",noir="black"
 	const taille_cote=4, nb_buttons=8, nb_green=8 //TODO make them parameters in the GUI
-	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
+	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla  //TODO remove unneeded global vars because of the wave state
 	var aff,nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen //gen #1 is the new easy one
 //IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
 
@@ -84,6 +84,9 @@ This program is free software: you can redistribute it and/or modify
 	//affichage de la tape
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) document.getElementById(i).bgColor="green" ;else document.getElementById(i).bgColor="red"
 	for (i=(taille_cote*taille_cote)/2;i<(taille_cote*taille_cote);i++) if (tape[i]==0) document.getElementById(i).bgColor="black" ;else document.getElementById(i).bgColor="white"
+	
+	//alert(tape.toJSONString()) marche pas 
+	//alert(JSON.stringify(tape))  //ca marche !!!!
 	    timer=setInterval("Horloge()", slice) 
 }//fin fucntion initia()
 function init() { //nothing should be done here except the setCallback says the official API site. In fact we don't know if this gadget has just been added or if the user came back later (playback is probably for each user separately so should not be a problem here)
@@ -106,11 +109,20 @@ function stateUpdated() {  //FIXME finir ce callback = affichage = un gros trava
 			clearInterval(timer); timer=setInterval("Horloge()", parseInt(wave.getState().get('slice')))
 			//et on va  initialiser comme dans initia, de préférence en un seul delta pour économiser des rafraichissements
 			//on a vu un systeme pour faire des deltas qui grandissent avant de les submiter dans un gadget simple
-			var delta = {}   // delta[viewerId] = bid;  taken from tutorial
+			var delta = {}   // taken from tutorial
 				 delta[nb_etats]=document.getElementById("et").value;delta[taille_tape]=document.getElementById("t").value;delta[nb_executions]=document.getElementById("ex").value
 		delta[compte]=document.getElementById("c").value;delta[nb_depla]=document.getElementById("d").value
  		//delta[gen]=document.getElementById("g").value  TODO generator
-
+		delta[etat]=0;delta[offset]=0
+		//on initialise les regles via random qui donne nombre entre zero et un ....
+		var dec; nb_etats= parseInt(delta[nb_etats])
+		var gen=2
+		
+		if (nb_etats==1) dec=1; else dec=1.000000001
+		for (i=0;i<nb_etats;i++) { //FIXME   alert(JSON.stringify(tape))  ca marche !!!!
+			for (j=0;j<Math.pow(2,nb);j++) {nouv_etats[i][j]=Math.floor(Math.abs(Math.random()*(nb_etats-dec)));if (nouv_etats[i][j]==i) nouv_etats[i][j]=nb_etats-1; nouv_depla[i][j]=Math.ceil(Math.random()*(nd-1)) } // FIXME
+		}//end for i
+		for (i=0;i<taille_tape;i++) tape[i]=Math.round(Math.random());  //initialisation à random  de la tape FIXME
 
         }//if isPlayback
 }// stateUpdated()

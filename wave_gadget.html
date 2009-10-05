@@ -89,20 +89,29 @@ This program is free software: you can redistribute it and/or modify
 function init() { //nothing should be done here except the setCallback says the official API site. In fact we don't know if this gadget has just been added or if the user came back later (playback is probably for each user separately so should not be a problem here)
 	//we will get the list of particpants as needed later so no need for a participant callback here
       //if (wave && wave.isInWaveContainer())     useless and prevents useful errors in the javascript console
-        wave.setStateCallback(stateUpdated);
+        wave.setStateCallback(stateUpdated)
 }// init()
-gadgets.util.registerOnLoadHandler(init);
+gadgets.util.registerOnLoadHandler(init)
 
 function stateUpdated() {  //FIXME finir ce callback = affichage = un gros travail !!!!
-	//d'abord la question est faut-il initialiser le state ?
+	//FIXME d'abord la question est suis-je master puis dois-je devenir master puis dois-je initialiser ou simplement installer une horloge
 	//pas besoin si on est en replay
 	if (!wave.isPlayback()) {
-		//pour cela on va parser la liste des participants et regarder si un d'entre eux a stocké la var etat de la dtm, car mes deltas étant cohérents si une var est là les autres y sont aussi 
-		var found=false;
-		for(var p in wave.getParticipants()) //pour chaque p on regarde si il a créé une variable de nom p.getId()_etat
-			{
-		}
-		
+		//pour cela on va regarder si un sem existe deja
+		var sem
+		if(!(sem=(wave.getState().get('etat')) ))
+			//maintenant on l'installe puisque il n'existe pas
+			//TODO epecher slice d'etre trop petit car problemes de concurence
+			wave.State().submitDelta({'sem': wave.getViewer().getId(), 'time' : wave.getTime(), 'slice' : document.getElementById(s).value})
+			clearInterval(timer); timer=setInterval("Horloge()", parseInt(wave.getState().get('slice')))
+			//et on va  initialiser comme dans initia, de préférence en un seul delta pour économiser des rafraichissements
+			//on a vu un systeme pour faire des deltas qui grandissent avant de les submiter dans un gadget simple
+			var delta = {}   // delta[viewerId] = bid;  taken from tutorial
+				 delta[nb_etats]=document.getElementById("et").value;delta[taille_tape]=document.getElementById("t").value;delta[nb_executions]=document.getElementById("ex").value
+		delta[compte]=document.getElementById("c").value;delta[nb_depla]=document.getElementById("d").value
+ 		//delta[gen]=document.getElementById("g").value  TODO generator
+
+
         }//if isPlayback
 }// stateUpdated()
 

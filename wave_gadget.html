@@ -86,17 +86,17 @@ This program is free software: you can redistribute it and/or modify
 	for (i=(taille_cote*taille_cote)/2;i<(taille_cote*taille_cote);i++) if (tape[i]==0) document.getElementById(i).bgColor="black" ;else document.getElementById(i).bgColor="white"
 	    timer=setInterval("Horloge()", slice) 
 }//fin fucntion initia()
-function init() {
-      if (wave && wave.isInWaveContainer()) {
+function init() { //nothing should be done here except the setCallback: we don't know if this gadget has just been added or if the user came back later (playback is probably for each user separately so should not be a problem here)
+	//we will get the list of particpants as needed later so no need for a participant callback here
+      //if (wave && wave.isInWaveContainer())     useless and prevents useful errors in the javascript console
         wave.setStateCallback(stateUpdated);
-      }
 }// init()
 gadgets.util.registerOnLoadHandler(init);
 
 function stateUpdated() {  //callback = affichage
       if(!wave.getState().get('count')) {
         div.innerHTML = "The count is 0."
-      }
+      }//if 
 }// stateUpdated()
 
 

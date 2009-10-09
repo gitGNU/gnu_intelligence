@@ -1,0 +1,62 @@
+<!-- This program is a social gadget that shows how many other participants are browsing the page"
+Copyright (C) september 2009 , Didier Rabiat-Blanchard   didier_rabiat-blanchard@razorcam.com 
+
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<Module>
+  <ModulePrefs title="Show how many participants are browsing the page" height="250">
+    <Require feature="rpc"/>
+  </ModulePrefs>
+
+  <Content type="html">
+  <![CDATA[
+  <script type="text/javascript"
+      src="http://wave-api.appspot.com/public/wave.js"></script>
+  <script type="text/javascript">
+	var timer;//standard JS timer
+	var parti = {};
+	var warn = {};
+    function horloge() { //called by the timer
+	clearInterval(timer)
+      var viewerId = wave.getViewer().getId();
+      var state = wave.getState();
+	//now we increment our counter
+      var current = parseInt(state.get(viewerId, '0')); //0 is the default
+        var delta = {};
+        delta[viewerId] = ++current;
+	//done
+	//now we compare the other counters to the last time
+	for (var i in wave.getParticipants())
+		{if (parti[i] && parseInt(state.get(i, '0')) <= parti[i] && warn[i]) 
+
+	document.getElementById('highestBid').firstChild.nodeValue = current;
+
+	timer=setInterval("horloge()", 500) //milliseconds
+        state.submitDelta(delta);
+	    }
+
+function init() {
+	timer=setInterval("horloge()", 500) //milliseconds
+  }
+gadgets.util.registerOnLoadHandler(init);
+
+
+//  participants are browsing the page
+  </script>
+  <br/>
+  : <span id="highestBid">0</span><br/>
+]]>
+</Content>
+</Module>
+

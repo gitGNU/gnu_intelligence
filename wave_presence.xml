@@ -15,7 +15,7 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <Module>
-  <ModulePrefs title="Show how many other participants are browsing the page" height="250">
+  <ModulePrefs title="Show how many participants are browsing the page" height="250">
     <Require feature="rpc"/>
   </ModulePrefs>
 
@@ -25,18 +25,20 @@ This program is free software: you can redistribute it and/or modify
       src="http://wave-api.appspot.com/public/wave.js"></script>
   <script type="text/javascript">
 	var timer;//standard JS timer
+	var parti = {};
+	var warn = {};
     function horloge() { //called by the timer
 	clearInterval(timer)
       var viewerId = wave.getViewer().getId();
       var state = wave.getState();
 	//now we increment our counter
       var current = parseInt(state.get(viewerId, '0')); //0 is the default
-        delta = {};
+        var delta = {};
         delta[viewerId] = ++current;
 	//done
 	//now we compare the other counters to the last time
-//	for (var i in wave.getParticipants())
-	
+	for (var i in wave.getParticipants())
+		{if (parti[i] && parseInt(state.get(i, '0')) <= parti[i] && warn[i]) 
 
 	document.getElementById('highestBid').firstChild.nodeValue = current;
 
@@ -50,7 +52,7 @@ function init() {
 gadgets.util.registerOnLoadHandler(init);
 
 
-//  other participants are browsing the page
+//  participants are browsing the page
   </script>
   <br/>
   : <span id="highestBid">0</span><br/>

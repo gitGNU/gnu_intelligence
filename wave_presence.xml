@@ -45,16 +45,9 @@ This program is free software: you can redistribute it and/or modify
 	    }
 
 function init() {
-  if (wave && wave.isInWaveContainer()) {
 	timer=setInterval("horloge()", 500) //milliseconds
-//wave.setStateCallback(renderInfo);
-  //  wave.setParticipantCallback(renderInfo);
-
   }
-}
 gadgets.util.registerOnLoadHandler(init);
-
-    function renderInfo() {}
 
 
 //  other participants are browsing the page

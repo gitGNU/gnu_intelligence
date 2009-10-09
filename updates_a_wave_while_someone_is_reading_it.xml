@@ -1,4 +1,4 @@
-<!-- This program is a social gadget that shows how many other participants are browsing the page"
+<!-- This program is a social gadget that updates a page when someone is browsing the page"
 Copyright (C) september 2009 , Didier Rabiat-Blanchard   didier_rabiat-blanchard@razorcam.com 
 
 This program is free software: you can redistribute it and/or modify
@@ -15,47 +15,31 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <Module>
-  <ModulePrefs title="Show how many participants are browsing the page" height="250">
+  <ModulePrefs title="Updates a page when someone reads it and shows the total number of seconds spent while reading it" height="250">
     <Require feature="rpc"/>
   </ModulePrefs>
-
   <Content type="html">
   <![CDATA[
   <script type="text/javascript"
       src="http://wave-api.appspot.com/public/wave.js"></script>
   <script type="text/javascript">
-	var timer;//standard JS timer
-	var parti = {};
-	var warn = {};
-    function horloge() { //called by the timer
+	var timer;
+    function horloge() { 
 	clearInterval(timer)
-      var viewerId = wave.getViewer().getId();
       var state = wave.getState();
-	//now we increment our counter
-      var current = parseInt(state.get(viewerId, '0')); //0 is the default
+      var current = parseInt(state.get('update_count', '0')); //0 is the default
         var delta = {};
-        delta[viewerId] = ++current;
-	//done
-	//now we compare the other counters to the last time
-	for (var i in wave.getParticipants())
-		{if (parti[i] && parseInt(state.get(i, '0')) <= parti[i] && warn[i]) 
-
-	document.getElementById('highestBid').firstChild.nodeValue = current;
-
-	timer=setInterval("horloge()", 500) //milliseconds
+        delta['update_count'] = ++current;
+	document.getElementById('SecondsSpent').firstChild.nodeValue = current;
+	timer=setInterval("horloge()", 1000) //milliseconds
         state.submitDelta(delta);
 	    }
-
 function init() {
-	timer=setInterval("horloge()", 500) //milliseconds
+	timer=setInterval("horloge()", 1000) //milliseconds
   }
 gadgets.util.registerOnLoadHandler(init);
-
-
-//  participants are browsing the page
-  </script>
-  <br/>
-  : <span id="highestBid">0</span><br/>
+</script>
+Seconds spent by everyone reading this: <span id="SecondsSpent">0</span>
 ]]>
 </Content>
 </Module>

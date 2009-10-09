@@ -32,7 +32,7 @@ This program is free software: you can redistribute it and/or modify
 	//now we increment our counter
       var current = parseInt(state.get(viewerId, '0')); //0 is the default
         delta = {};
-        delta[viewerId] = current++;
+        delta[viewerId] = ++current;
 	//done
 	//now we compare the other counters to the last time
 //	for (var i in wave.getParticipants())
@@ -40,41 +40,21 @@ This program is free software: you can redistribute it and/or modify
 
 	document.getElementById('highestBid').firstChild.nodeValue = current;
 
-        state.submitDelta(delta);
 	timer=setInterval("horloge()", 500) //milliseconds
-    }
-/*
-    function renderInfo() {
-      if (!wave.getState()) {
-        return;
-      }
-	clearInterval(timer)
-       var state = wave.getState();
-      var keys = state.getKeys();
-      for (var i = 0; i < keys.length; ++i) {
-        var bidder = keys[i];
-        var bid = parseInt(state.get(bidder));
-        }
-      }
-      var bidderName = 'Nobody';
-      if (highestBidderId) {
-        bidderName = highestBidderId;
-        var participants = wave.getParticipants();
-        if (participants) {
-          for (var i = 0; i < participants.length; ++i) {
-            if (participants[i].getId() == highestBidderId) {
-              var highestBidder = participants[i];
-              bidderName = highestBidder.getDisplayName();
-              if (!bidderName) {
-                bidderName = highestBidder.getId();
-              }
-              thumbNail = highestBidder.getThumbnailUrl();
-            }
-          }
-        }
-      } */
-      document.getElementById('highestBid').firstChild.nodeValue = highestBid;
-    }
+        state.submitDelta(delta);
+	    }
+
+function init() {
+  if (wave && wave.isInWaveContainer()) {
+	timer=setInterval("horloge()", 500) //milliseconds
+//wave.setStateCallback(renderInfo);
+  //  wave.setParticipantCallback(renderInfo);
+
+  }
+}
+gadgets.util.registerOnLoadHandler(init);
+
+    function renderInfo() {}
 
 
 //  other participants are browsing the page

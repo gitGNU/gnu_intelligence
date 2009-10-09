@@ -1,0 +1,190 @@
+<!-- This program is a realtime intelligence test
+Copyright (C) september 2009 , Didier Rabiat-Blanchard   didier_rabiat-blanchard@razorcam.com 
+
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Intelligence puzzle</title></head>
+<script type="text/javascript"
+      src="http://wave-api.appspot.com/public/wave.js"></script>
+<SCRIPT>
+	var i,j,nb,nd //loop indices and number of effective buttons and of displays/displacements
+	const blanc="white",noir="black"
+	const taille_cote=4, nb_buttons=8, nb_green=8 //TODO make them parameters in the GUI
+	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla  //TODO remove unneeded global vars because of the wave state
+	var aff,nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen //gen #1 is the new easy one
+//IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
+
+
+	// MISC PREVIOUS STUFF:	
+	//	clearInterval(timer)
+	// nb_etats=parseInt(document.getElementById("et").value);taille_tape=parseInt(document.getElementById("t").value);nb_executions=parseInt(document.getElementById("ex").value);slice=slice2=parseInt(document.getElementById("s").value)//temps en ms de la slice
+		//alert(JSON.stringify(tape))  //ca marche !!!!
+	   // timer=setInterval("Horloge()", slice) 
+
+function init() { //nothing should be done here except the setCallback says the official API site. In fact we don't know if this gadget has just been added or if the user came back later (playback is probably for each user separately so should not be a problem here)
+	//we will get the list of particpants as needed later so no need for a participant callback here
+      //if (wave && wave.isInWaveContainer())     useless and prevents useful errors in the javascript console
+        wave.setStateCallback(stateUpdated)
+}// init()
+gadgets.util.registerOnLoadHandler(init)
+
+function stateUpdated() {  //FIXME finir ce callback = affichage = un gros travail !!!!
+	//FIXME d'abord la question est suis-je master puis dois-je devenir master puis dois-je initialiser ou simplement installer une horloge
+	//pas besoin si on est en replay
+	if (!wave.isPlayback()) {
+		//pour cela on va regarder si un sem existe deja
+		var sem
+		if(!(sem=(wave.getState().get('etat')) ))
+			//maintenant on l'installe puisque il n'existe pas
+			//TODO epecher slice d'etre trop petit car problemes de concurence
+			wave.State().submitDelta({'sem': wave.getViewer().getId(), 'time' : wave.getTime(), 'slice' : document.getElementById(s).value})
+			clearInterval(timer); timer=setInterval("Horloge()", parseInt(wave.getState().get('slice')))
+			//et on va  initialiser comme dans initia, de préférence en un seul delta pour économiser des rafraichissements
+			//on a vu un systeme pour faire des deltas qui grandissent avant de les submiter dans un gadget simple
+			var delta = {}   // taken from tutorial
+				 delta[nb_etats]=document.getElementById("et").value;delta[taille_tape]=document.getElementById("t").value;delta[nb_executions]=document.getElementById("ex").value
+		delta[compte]=document.getElementById("c").value;delta[nb_depla]=document.getElementById("d").value
+ 		//delta[gen]=document.getElementById("g").value  TODO generator
+		delta[etat]=0;delta[offset]=0
+		//on initialise les regles via random qui donne nombre entre zero et un ....
+		var dec; nb_etats= parseInt(delta[nb_etats])
+		var gen=2
+		
+		if (nb_etats==1) dec=1; else dec=1.000000001
+		for (i=0;i<nb_etats;i++) { //FIXME   alert(JSON.stringify(tape))  ca marche !!!!
+			for (j=0;j<Math.pow(2,nb);j++) {nouv_etats[i][j]=Math.floor(Math.abs(Math.random()*(nb_etats-dec)));if (nouv_etats[i][j]==i) nouv_etats[i][j]=nb_etats-1; nouv_depla[i][j]=Math.ceil(Math.random()*(nd-1)) } // FIXME
+		}//end for i
+		for (i=0;i<taille_tape;i++) tape[i]=Math.round(Math.random());  //initialisation à random  de la tape FIXME
+
+        }//if isPlayback
+}// stateUpdated()
+
+
+   function Horloge() {
+	clearInterval(timer)
+
+//       var dt=new Date()
+//     window.status=dt.getHours()+":"+dt.getMinutes()+":"+dt.getSeconds()
+// on respecte la fiche tableau_dtm
+//NOW on recopie la PARTIE SUPERIEURE de la GUI dans la tape
+//TODO POUR CELA on pourra peut-etre fabriquer le tableau entierement en JS...
+//for(i=(taille_cote*taille_cote)/2;i++;i<taille_cote*taille_cote)
+// on exécute nb_executions fois la DTM
+	for (i=0;i<nb_executions;i++){
+		var valeur
+		//d'abord on stocke la valeur courante en case offset
+		if (gen==2) valeur=tape[offset]
+		//ensuite on écrit la nouvelle valeur sauf si on est dans les actions de la GUI
+		//if(offset<((taille_cote*taille_cote)/2)) tape[offset]=regles[etat,valeur]  
+		if (gen==2) if ((offset<((taille_cote*taille_cote)/2))||(offset>=(taille_cote*taille_cote)) ) tape[offset]=1-tape[offset] //on flippe
+		//si gen est 1 on met en place la eprception prébvue dans le tableau deplacement 
+		//il s'agit d'obtenir un entier valeur à partir des boutons via une boucle
+		if (gen==1) { valeur=0
+			for(j=0;j<nb;j++) valeur+=Math.pow(2,j)*tape[nb_green+j]
+		etat=nouv_etats[etat][valeur] //on peut alors changer d'état
+		//puis il s'agit de convertir un entier à afficher en bits via une boucle
+		//pour cela tmp va recevoir l'entier à afficher puis on va lui retrancher des pusisances de 2 quand il les possede
+			var tmp=aff[etat] //on affiche toujours la meme chose dans chaque état
+			for(j=nb_green-1;j>=0;j--) {if (tmp-Math.pow(2,j)>=0) {tmp-=Math.pow(2,j); tape[j]=1} else  tape[j]=0}
+			}//end if (gen==1) 
+		//ensuite on se déplace de maniere absolue pour voir
+		if (gen==2) offset+=nouv_depla[etat][valeur]
+		if (gen==2) if (offset>=taille_tape) offset-=taille_tape //modulo quoi
+		//enfin on change d'état en gen 2
+		if (gen==2) etat=nouv_etats[etat][valeur]
+		//if (i==9) alert("valeur="+valeur+"etat="+etat+"offset="+offset) // EBUG 
+	}//fin for
+	score=0
+	//now we display the green/red squares while updating the score:
+	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++} else document.getElementById(i).bgColor="red"
+	//maintenant on decompte le compte à rebours
+	compte--
+	//on affiche le compte
+	document.getElementById("l").value=compte
+	//et le socre
+	document.getElementById("sc").value=score
+if (!compte) {alert("game over! your score is "+score) ; return}
+	var slice3=parseInt(document.getElementById("s").value)
+	if ((slice3<=slice)&&(slice3>0)) slice2=slice3; else slice2=slice
+	timer=setInterval("Horloge()", slice2) 
+
+   }//fin body de la fonction Horloge()
+
+   
+</SCRIPT>
+<!-- <h2 align="center">Intelligence puzzle</h2> -->
+<A href='javascript:initia()'>Click here to start a new game</A>
+<p>
+<form>
+Countdown:  <INPUT type="text" value="0" id="l">
+Score: <INPUT type="text" value="0" id="sc">
+</form>
+<table id="table" align="center" bgcolor="#808080" border="5" 
+bordercolor="#000000" cellpadding="0" cellspacing="3" height="400" 
+width="400">
+    <tbody><tr>
+            <td   id=0>&nbsp;
+</td>
+<td id=1>&nbsp;</td>
+      <td  id=2>&nbsp;</td>
+      <td  id=3>&nbsp;</td>
+     
+    </tr>
+    <tr>
+      <td  id=4>&nbsp;</td>
+      <td  id=5>&nbsp;</td>
+      <td  id=6>&nbsp;</td>
+      <td  id=7>&nbsp;</td>
+    
+    </tr>
+    <tr>
+	    <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=8>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=9>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=10>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" bgcolor="" id=11>&nbsp;</td>
+     
+    </tr>
+    <tr>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=12>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=13>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=14>&nbsp;</td>
+      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" bgcolor="" id=15>&nbsp;</td>
+     
+    </tr>
+
+</tbody></table>
+
+<hr>
+
+Options that experts can change before a new game: <p>
+<form name="ff">
+Random environment generator # (1 or 2): <INPUT type="text" value="2" name="gen" id="g"> <p> <!-- TODO gen easy 1 should be default -->
+   Pause between two executions of the environment in milliseconds: <INPUT type="text" value="1000" name="slice" id="s"> <p>
+Number of instructions of the environment (>0) : <INPUT type="text" value="5" name="nb_etats" id="et"> <p>
+Nomber of instructions executed after each pause: <INPUT type="text" value="1" name="nb_executions" id="ex"><p>
+Countdown in number of executions: <INPUT type="text" value="400" id="c"> <p>
+Number of variables created by generator #2: <INPUT type="text" value="20" name="taille_tape" id="t"><p>
+Maximum move possible in this array of variables (<=variables)  : <INPUT type="text" value="20" id="d"> <p>
+
+</form>
+<p>
+<p>
+<i>
+Copyright (C) september 2009 , Didier Rabiat-Blanchard   didier_rabiat-blanchard@razorcam.com  
+ There is no warranty for this game program. Licensees may convey this program under the GNU Affero General Public License version 3 or later.
+For the complete source code and license of this program see <a href="http://www.razorcam.com">http://www.razorcam.com</a>
+</i>
+</body></html>

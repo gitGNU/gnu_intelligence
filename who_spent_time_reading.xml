@@ -1,0 +1,55 @@
+<!-- This program is a social gadget that updates a page when someone is browsing the page"
+Copyright (C) september 2009 , Didier Rabiat-Blanchard   didier_rabiat-blanchard@razorcam.com 
+
+This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<Module>
+  <ModulePrefs title="Updates a page when someone reads it and shows the total number of seconds spent while reading it" height="250">
+    <Require feature="rpc"/>
+  </ModulePrefs>
+  <Content type="html">
+  <![CDATA[
+<div id="content_div"> </div>
+  <script type="text/javascript"
+      src="http://wave-api.appspot.com/public/wave.js"></script>
+  <script type="text/javascript">
+	var timer
+	var state
+	var current
+    function horloge() { 
+	clearInterval(timer)
+      	state = wave.getState()
+        state.submitDelta({'update_count':parseInt(state.get('update_count', '0'))+1})
+	document.getElementById('1').firstChild.nodeValue=parseInt(state.get('update_count', '0'))
+	timer=setInterval("horloge()", 1000)
+	    }
+function init() {
+	timer=setInterval("horloge()", 1000)
+var element = document.getElementById('content_div')
+     element.style.height=10
+	element.style.backgroundColor="yellow"
+	var html= "";
+	html+= "Time spent by everyone reading this wave: <span id=1> </span> seconds"
+	element.innerHTML = html
+gadgets.window.adjustHeight(10)
+  }
+gadgets.util.registerOnLoadHandler(init)
+</script>
+]]>
+</Content>
+</Module>
+<!--http://www.razorcam.com/seconds_spent_by_everyone_reading.xml
+Note that while someone reads the wave it appears at the top of everyone's inbox (unless it's muted)
+The counter goes faster when multiple users are here.
+-->

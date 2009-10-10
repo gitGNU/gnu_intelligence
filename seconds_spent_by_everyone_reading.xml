@@ -24,15 +24,12 @@ This program is free software: you can redistribute it and/or modify
       src="http://wave-api.appspot.com/public/wave.js"></script>
   <script type="text/javascript">
 	var timer
-	var delta
 	var state
 	var current
     function horloge() { 
 	clearInterval(timer)
       	state = wave.getState()
-        delta={}
-        delta['update_count']=parseInt(state.get('update_count', '0'))+1
-        state.submitDelta(delta)
+        state.submitDelta({'update_count':parseInt(state.get('update_count', '0'))+1})
 	document.getElementById('SecondsSpent').firstChild.nodeValue=parseInt(state.get('update_count', '0'))
 	timer=setInterval("horloge()", 1000)
 	    }

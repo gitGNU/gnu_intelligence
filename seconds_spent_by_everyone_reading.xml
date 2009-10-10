@@ -23,23 +23,31 @@ This program is free software: you can redistribute it and/or modify
   <script type="text/javascript"
       src="http://wave-api.appspot.com/public/wave.js"></script>
   <script type="text/javascript">
-	var timer;
+	var timer
+	var delta = {}
+	var state
+	var current
     function horloge() { 
 	clearInterval(timer)
-      var state = wave.getState();
-      var current = parseInt(state.get('update_count', '0')); //0 is the default
-        var delta = {};
-        delta['update_count'] = ++current;
-	document.getElementById('SecondsSpent').firstChild.nodeValue = current;
-	timer=setInterval("horloge()", 1000) //milliseconds
-        state.submitDelta(delta);
+      	state = wave.getState()
+        current = parseInt(state.get('update_count', '0'))
+        delta={}
+        delta['update_count']=++current
+        state.submitDelta(delta)
+	document.getElementById('SecondsSpent').firstChild.nodeValue=current
+	timer=setInterval("horloge()", 1000)
 	    }
 function init() {
-	timer=setInterval("horloge()", 1000) //milliseconds
+	timer=setInterval("horloge()", 1000)
   }
-gadgets.util.registerOnLoadHandler(init);
+gadgets.util.registerOnLoadHandler(init)
+gadgets.window.adjustHeight(10)
 </script>
-Seconds spent by everyone reading this: <span id="SecondsSpent">0</span>
+Seconds spent by everyone reading this wave: <span id="SecondsSpent"> </span>
 ]]>
 </Content>
 </Module>
+<!--http://www.razorcam.com/seconds_spent_by_everyone_reading.xml
+Note that while someone reads the wave it appears at the top of everyone's inbox (unless it's muted)
+The counter goes faster when multiple users are here.
+-->

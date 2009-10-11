@@ -15,7 +15,7 @@ This program is free software: you can redistribute it and/or modify
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <Module>
-  <ModulePrefs title="Updates a page when someone reads it and shows the total number of seconds spent while reading it" height="250">
+<ModulePrefs title="Updates a page when someone reads it and shows the total number of seconds spent while reading it" height="10">
     <Require feature="rpc"/>
   </ModulePrefs>
   <Content type="html">
@@ -37,8 +37,8 @@ This program is free software: you can redistribute it and/or modify
 function init() {
 	timer=setInterval("horloge()", 1000)
 var element = document.getElementById('content_div')
-     element.style.height=10
-	element.style.backgroundColor="yellow"
+     element.style.height=500
+	element.style.backgroundColor="#dddddd"
 	var html= "";
 	html+= "Time spent by everyone reading this wave: <span id=1> </span> seconds"
 	element.innerHTML = html

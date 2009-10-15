@@ -1,3 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Shows the total number of seconds spent while reading it" height="20">
+	<Require feature="dynamic-height" />
+	<Require feature="wave" />
+  </ModulePrefs>
+  <Content type="html">
+  <![CDATA[
 <!-- This program is a social gadget that updates a page when someone is browsing the page"
 Copyright (C) september 2009 , Didier Rabiat-Blanchard   didier_rabiat-blanchard@razorcam.com 
 
@@ -14,19 +22,15 @@ This program is free software: you can redistribute it and/or modify
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<Module>
-  <ModulePrefs title="Shows the total number of seconds spent while reading it" height="20">
-	<Require feature="dynamic-height" />
-	<Require feature="wave" />
-  </ModulePrefs>
-  <Content type="html">
-  <![CDATA[
   <script src="http://wave-api.appspot.com/public/wave.js"></script>
   <script>
 	var t
 	var s
-    function horloge() {if (wave.getMode()==wave.Mode.UNKNOWN) return
-	if (wave.getMode()!=wave.Mode.PLAYBACK) s.submitDelta({'u':parseInt(s.get('u','0'))+1})	
+	var m
+	const u=wave.Mode.UNKNOWN
+	const p=wave.Mode.PLAYBACK
+    function horloge() {if ((m=wave.getMode())==u) return
+	if (m!=p) s.submitDelta({'u':parseInt(s.get('u','0'))+1})	
 	document.getElementById('Spent').firstChild.nodeValue=parseInt(s.get('u','0'))
     }
 function init() {
@@ -39,10 +43,10 @@ function c() {s=wave.getState()
 gadgets.util.registerOnLoadHandler(init)
 </script>
 Seconds spent by everyone reading this wave: <span id="Spent"> </span>               <a href="http://www.razorcam.com/google-wave-train-your-intelligence-gadget" target="_top">info</a>
-]]>
-</Content>
-</Module>
-<!--http://www.razorcam.com/seconds_spent_by_everyone_reading.xml
+<!--http://www.razorcam.com/seconds_dyn.xml
 Note that while someone reads the wave it appears at the top of everyone's inbox (unless it's muted)
 The counter goes faster when multiple users are here.
 -->
+]]>
+</Content>
+</Module>

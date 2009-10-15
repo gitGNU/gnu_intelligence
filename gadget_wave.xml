@@ -1,3 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs title="Custom Wave Gadget" heigth="300"> 
+   <Require feature="dynamic-height" />
+<Require feature="wave" />
+  </ModulePrefs>
+<Content type="html"><![CDATA[ 
 <!-- This program is a gadget game"
 Copyright (C) september 2009 , Didier Rabiat-Blanchard   didier_rabiat-blanchard@razorcam.com 
 
@@ -14,13 +21,6 @@ This program is free software: you can redistribute it and/or modify
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<?xml version="1.0" encoding="UTF-8" ?>
-<Module>
-<ModulePrefs title="Custom Wave Gadget" heigth="300"> 
-   <Require feature="dynamic-height" />
-<Require feature="wave" />
-  </ModulePrefs>
-<Content type="html"><![CDATA[ 
 <SCRIPT>
 //FIXME: array à 2 dimension à initialiser via une boucle
 //FIXME: fonctions init_gen1, init_gen2, horloge_gen1 horloge_gen2 et TESTS UNITAIRES 

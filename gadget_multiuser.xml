@@ -34,6 +34,7 @@
 	const taille_cote=4, nb_buttons=8, nb_green=8 //TODO make them parameters in the GUI
 	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
 	var aff,nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen //gen #1 is the new easy one
+	var s
 //IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
   function initia(){
 		clearInterval(timer)
@@ -187,11 +188,11 @@ For the complete source code and license of this program see <a href="http://www
 <script>
 function init() {
 gadgets.window.adjustHeight()
-//wave.setStateCallback(c)
+wave.setStateCallback(c)
 	initia()
   }
-//function c() {s=wave.getState()
-//}
+function c() {s=wave.getState()
+}
 gadgets.util.registerOnLoadHandler(init)
 </script>
 ]]></Content> 

@@ -18,6 +18,7 @@ This program is free software: you can redistribute it and/or modify
 <Module>
 <ModulePrefs title="Custom Wave Gadget" heigth="300"> 
    <Require feature="dynamic-height" />
+<Require feature="wave" />
   </ModulePrefs>
 <Content type="html"><![CDATA[ 
 <SCRIPT>
@@ -209,10 +210,5 @@ gadgets.window.adjustHeight()
 //}
 gadgets.util.registerOnLoadHandler(init)
 </script>
-
-Note that while someone reads the wave it appears at the top of everyone's inbox (unless it's muted)
-
-The counter goes faster when multiple users are here.
-
 ]]></Content> 
 </Module>

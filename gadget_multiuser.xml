@@ -34,7 +34,7 @@
 	const taille_cote=4, nb_buttons=8, nb_green=8 //TODO make them parameters in the GUI
 	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
 	var aff,nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen //gen #1 is the new easy one
-	var s
+	var s=0 //state of the wave
 //IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
   function initia(){
 		clearInterval(timer)
@@ -107,7 +107,7 @@
 	}//fin for
 	score=0
 	//now we display the green/red squares while updating the score:
-	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++} else document.getElementById(i).bgColor="red"
+	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++;s.submitValue(i,1)} else {document.getElementById(i).bgColor="red";s.submitValue(i,0)}
 	//maintenant on decompte le compte à rebours
 	compte--
 	//on affiche le compte
@@ -162,7 +162,7 @@ for(i=0;i<taille_cote;i++){
 	for(j=0;j<taille_cote;j++){
 		ht+='<td id='+(taille_cote*i+j)+' '
 		if (i>=taille_cote/2){
-			ht+='onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}"'
+			ht+='onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc;s.submitValue(this.id,1)} else {tape[this.id]=0;this.bgColor=noir;s.submitValue(this.id,0)}"'
 		}//if i	
 	ht+='>&nbsp;</td>'
 	}//for j
@@ -173,11 +173,13 @@ ht+='</tbody></table>'
 document.getElementById("div").innerHTML=ht
 gadgets.window.adjustHeight()
 wave.setStateCallback(c)
-	initia()
   }
-function c() {s=wave.getState()
-//FIXME we display the board
-}
+function c() {if (!s) initia()
+	s=wave.getState()
+//FIXME we display the board and modify the tape
+	//score=0
+	//for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++} else document.getElementById(i).bgColor="red"
+}// c() 
 gadgets.util.registerOnLoadHandler(init)
 </script>
 ]]></Content> 

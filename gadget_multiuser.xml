@@ -5,6 +5,7 @@
 <Require feature="wave" />
   </ModulePrefs>
 <Content type="html"><![CDATA[ 
+<script src="http://wave-api.appspot.com/public/wave.js"></script>
 <SCRIPT>
 //FIXME: array à 2 dimension à initialiser via une boucle
 //FIXME: fonctions init_gen1, init_gen2, horloge_gen1 horloge_gen2 et TESTS UNITAIRES 
@@ -33,10 +34,11 @@
 	var blanc="white",noir="black"
 	const taille_cote=4, nb_buttons=8, nb_green=8 //TODO make them parameters in the GUI
 	var nb_etats,taille_tape,nb_executions,slice,slice2,compte,nb_depla
-	var aff,nouv_depla,nouv_etats,etat,tape,timer,score,dec,gen //gen #1 is the new easy one
+	var aff,nouv_depla,nouv_etats,etat,timer,score,dec,gen //gen #1 is the new easy one
 	var s=0 //state of the wave
 	const u=wave.Mode.UNKNOWN
 	const p=wave.Mode.PLAYBACK
+	 var tape=new Array(taille_tape) //dont cote^2 cases sont mappées dans la GUI , initialisation à zero done later indeed
 //IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
   function initia(){ if (wave.getMode()==u||wave.getMode()==p) return
 		clearInterval(timer)
@@ -59,7 +61,6 @@
 	//nouv_etats=new Array(nb_etats,Math.pow(2,nb))
 	nouv_etats=new Array(nb_etats); for (i=0;i<nb_etats;i++) nouv_etats[i]=new Array(Math.pow(2,nb))
 	 etat=0,offset=0
-	 tape=new Array(taille_tape) //dont cote^2 cases sont mappées dans la GUI , initialisation à zero done later indeed
 	// alert(tape[10]) undefined
 	//on initialise les regles via random qui donne nombre entre zero et un ....
 	if (nb_etats==1) dec=1; else dec=1.000000001

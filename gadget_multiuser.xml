@@ -130,40 +130,7 @@ if (!compte) {alert("game over! your score is "+score) ; return}
 Countdown:  <INPUT type="text" value="0" id="l">
 Score: <INPUT type="text" value="0" id="sc">
 </form>
-<table id="table" align="center" bgcolor="#808080" border="5" 
-bordercolor="#000000" cellpadding="0" cellspacing="3" height="400" 
-width="400">
-    <tbody><tr>
-            <td   id=0>&nbsp;
-</td>
-<td id=1>&nbsp;</td>
-      <td  id=2>&nbsp;</td>
-      <td  id=3>&nbsp;</td>
-     
-    </tr>
-    <tr>
-      <td  id=4>&nbsp;</td>
-      <td  id=5>&nbsp;</td>
-      <td  id=6>&nbsp;</td>
-      <td  id=7>&nbsp;</td>
-    
-    </tr>
-    <tr>
-	    <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=8>&nbsp;</td>
-      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=9>&nbsp;</td>
-      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=10>&nbsp;</td>
-      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" bgcolor="" id=11>&nbsp;</td>
-     
-    </tr>
-    <tr>
-      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=12>&nbsp;</td>
-      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=13>&nbsp;</td>
-      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" id=14>&nbsp;</td>
-      <td onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}" bgcolor="" id=15>&nbsp;</td>
-     
-    </tr>
-
-</tbody></table>
+<div id="div"> </div>
 
 <hr>
 
@@ -187,6 +154,23 @@ For the complete source code and license of this program see <a href="http://www
 </i>
 <script>
 function init() {
+var ht=' <table id="table" align="center" bgcolor="#808080" border="5" '
+ht+='bordercolor="#000000" cellpadding="0" cellspacing="3" height="400" '
+ht+='width="400"><tbody>'
+for(i=0;i<taille_cote;i++){
+	ht+='<tr>'
+	for(j=0;j<taille_cote;j++){
+		ht+='<td id='+taille_cote*i+j'+' '
+		if (i>=taille_cote/2){
+			ht+='onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}"'
+		}//if i	
+	ht+='>&nbsp;</td>
+	}//for j
+	ht+='</tr>
+}//for i
+ht+='</tbody></table>'
+
+document.getElementByID("div).innerHTML=ht
 gadgets.window.adjustHeight()
 wave.setStateCallback(c)
 	initia()

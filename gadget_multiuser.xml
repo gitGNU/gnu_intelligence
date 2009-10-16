@@ -110,9 +110,8 @@
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++;s.submitValue(i,1)} else {document.getElementById(i).bgColor="red";s.submitValue(i,0)}
 	//maintenant on decompte le compte à rebours
 	compte--
-	//on affiche le compte
+	//on affiche le compte and the score
 	document.getElementById("l").value=compte
-	//et le socre
 	document.getElementById("sc").value=score
 if (!compte) {alert("game over! your score is "+score) ; return}
 	var slice3=parseInt(document.getElementById("s").value)

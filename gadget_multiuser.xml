@@ -192,6 +192,7 @@ wave.setStateCallback(c)
 	initia()
   }
 function c() {s=wave.getState()
+//FIXME we display the board
 }
 gadgets.util.registerOnLoadHandler(init)
 </script>

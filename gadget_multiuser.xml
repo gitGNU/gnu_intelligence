@@ -186,7 +186,7 @@ function c() {if (!s) var first=true
 	document.getElementById("sc").value=score
 //and the black and white squares 
 for (i=(taille_cote*taille_cote)/2;i<taille_cote*taille_cote ;i++) if (parseInt(s.get(i))==1) {document.getElementById(i).bgColor=blanc;tape[i]=1} else {document.getElementById(i).bgColor=noir;tape[i]=0}
-if (!compte) {alert("Game over! The final score is "+score) ; return} //TODO pas dans un alert car peut perturber 
+//if (!compte) {alert("Game over! The final score is "+score) ; return} //TODO alert déconne et game over pas affiché
 }// c() 
 gadgets.util.registerOnLoadHandler(init)
 </script>

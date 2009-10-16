@@ -182,7 +182,7 @@ function c() {if (!s) var first=true
 	score=0
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (s.get(i)==1) {tape[i]=1;document.getElementById(i).bgColor="green";score++} else {document.getElementById(i).bgColor="red";tape[i]=0}
 	//document.getElementById("l").value=compte  FIXME
-	document.getElementById("l").value==parseInt(s.get("c","0"))
+	document.getElementById("l").value=parseInt(s.get("c","0"))
 	document.getElementById("sc").value=score
 //and the black and white squares 
 for (i=(taille_cote*taille_cote)/2;i<taille_cote*taille_cote ;i++) if (parseInt(s.get(i))==1) {document.getElementById(i).bgColor=blanc;tape[i]=1} else {document.getElementById(i).bgColor=noir;tape[i]=0}

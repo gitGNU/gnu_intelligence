@@ -70,8 +70,8 @@
 	}//end for i
 	for (i=0;i<taille_tape;i++) tape[i]=Math.round(Math.random());  //initialisation à random  de la tape
 	//affichage de la tape
-	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";s.setValue(i,1) } ;else {document.getElementById(i).bgColor="red";s.setValue(i,0)}
-	for (i=(taille_cote*taille_cote)/2;i<(taille_cote*taille_cote);i++) if (tape[i]==0) {document.getElementById(i).bgColor="black";s.setValue(i,0) };else {document.getElementById(i).bgColor="white";s.setValue(i,1)}
+	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";s.submitValue(i,1) } else {document.getElementById(i).bgColor="red";s.submitValue(i,0)}
+	for (i=(taille_cote*taille_cote)/2;i<(taille_cote*taille_cote);i++) if (tape[i]==0) {document.getElementById(i).bgColor="black";s.submitValue(i,0) }else {document.getElementById(i).bgColor="white";s.submitValue(i,1)}
 	    timer=setInterval("Horloge()", slice) 
 }//fin fucntion initia()
    function Horloge() { if (wave.getMode()==u||wave.getMode()==p) return

@@ -114,7 +114,7 @@
 	//maintenant on decompte le compte à rebours
 	compte--
 	//on affiche le compte and the score
-	document.getElementById("l").value=compte; s.submitValue("c",compte);
+	document.getElementById("l").value=compte; s.submitValue("c",compte+"");
 	document.getElementById("sc").value=score 
 
 	var slice3=parseInt(document.getElementById("s").value)

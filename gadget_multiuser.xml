@@ -160,17 +160,17 @@ ht+='width="400"><tbody>'
 for(i=0;i<taille_cote;i++){
 	ht+='<tr>'
 	for(j=0;j<taille_cote;j++){
-		ht+='<td id='+taille_cote*i+j'+' '
+		ht+='<td id='+(taille_cote*i+j)+' '
 		if (i>=taille_cote/2){
 			ht+='onclick="if(tape[this.id]==0) {tape[this.id]=1;this.bgColor=blanc} else {tape[this.id]=0;this.bgColor=noir}"'
 		}//if i	
-	ht+='>&nbsp;</td>
+	ht+='>&nbsp;</td>'
 	}//for j
-	ht+='</tr>
+	ht+='</tr>'
 }//for i
 ht+='</tbody></table>'
 
-document.getElementByID("div).innerHTML=ht
+document.getElementById("div").innerHTML=ht
 gadgets.window.adjustHeight()
 wave.setStateCallback(c)
 	initia()

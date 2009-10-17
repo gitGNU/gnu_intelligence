@@ -33,9 +33,10 @@
 	var s=0 //state of the wave
 	const u=wave.Mode.UNKNOWN
 	const p=wave.Mode.PLAYBACK
+	var ini=false
 	 var tape=new Array(taille_tape) //dont cote^2 cases sont mappées dans la GUI , initialisation à zero done later indeed
 //IMPORTANT: no var is initialized before initia() because we want to run it several times and reinitialize everything
-  function initia(){ if (wave.getMode()==u||wave.getMode()==p) return
+  function initia(){ if (!ini||wave.getMode()==u||wave.getMode()==p) return
 		clearInterval(timer)
 	 nb_etats=parseInt(document.getElementById("et").value);taille_tape=parseInt(document.getElementById("t").value);nb_executions=parseInt(document.getElementById("ex").value);slice=slice2=parseInt(document.getElementById("s").value)//temps en ms de la slice
 		compte=parseInt(document.getElementById("c").value);nb_depla=parseInt(document.getElementById("d").value)
@@ -175,9 +176,10 @@ document.getElementById("div").innerHTML=ht
 gadgets.window.adjustHeight()
 wave.setStateCallback(c)
   }
-function c() {if (!s) var first=true
+function c() {//if (!s) var first=true
 	s=wave.getState()
-	if (first && (s.get(1)==null)) initia()
+	//if (first && (s.get(1)==null)) ini=true
+	ini=true
 	score=0
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (s.get(i)==1) {tape[i]=1;document.getElementById(i).bgColor="green";score++} else {document.getElementById(i).bgColor="red";tape[i]=0}
 	//document.getElementById("l").value=compte  FIXME

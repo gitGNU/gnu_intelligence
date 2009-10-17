@@ -107,12 +107,13 @@
 	}//fin for
 	score=0
 	//now we display the green/red squares while updating the score:
-	//FIXME use a delta
-	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++;s.submitValue(i,1)} else {document.getElementById(i).bgColor="red";s.submitValue(i,0)}
+	var delta={}
+	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++;delta[i]=1} else {document.getElementById(i).bgColor="red";delta[i]=0}
 	//maintenant on decompte le compte à rebours
 	compte--
 	//on affiche le compte and the score
-	document.getElementById("l").value=compte; s.submitValue("c",compte+"");
+	document.getElementById("l").value=compte; delta.c=compte
+	s.submitDelta(delta)
 	document.getElementById("sc").value=score 
 
 	var slice3=parseInt(document.getElementById("s").value)

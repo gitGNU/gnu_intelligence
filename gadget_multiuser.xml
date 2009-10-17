@@ -16,9 +16,6 @@
 //TODO sauvegarde de DTM  et de la bande de départ pour pouvoir y rejouer depuis le début , 80 instructions semble bien
 //TODO offrir générateurs de programmes sous forme de fichier programme carrément comme pour IA 
 	//important pour les suites de problemes tous faits come dans un test QI, avec solutions en vidéo
-//TODO: utiliser document.write pour écrire un tableau de taille dynamique
-		//document.location.search donne ?5
-		//un parseInt de ?5 devrait suffire
 //TODO bouton reset des parametres experts , shift-reload marche quand meme actuellement ainsi que enter dans url
 //TODO  barre colorée du temps restant qui raccourcit
 //TODO changer nombre de cases GUI via génération du tableau par JS
@@ -27,8 +24,6 @@
 //TODO MAPPING touches du clavier qsdf, jklm, et barre espace pour case avec le curseur 
 //TODO: reprise apres arret,  sauvegarde et load de parties 
 // TODO pouvoir visualiser DTM et tape et etats en temps reeels ou via logs/replays
-//TODO fonction start appelée par un bouton qui lance initialisation puis la DTM et qui commence par nb_etats=ff.nb_etats.value;taille_tape=ff.taille_tape.value;nb_executions=ff.nb_executions.value;slice=ff.slice.value
-	//utilsier getElementByID sinon on a warnings
 //done nsUpdateService pas implémenté par iceweasel probablement 
 	var i,j,nb,nd //loop indices and number of effective buttons and of displays/displacements
 	var blanc="white",noir="black"
@@ -70,9 +65,11 @@
 	}//end for i
 	for (i=0;i<taille_tape;i++) tape[i]=Math.round(Math.random());  //initialisation à random  de la tape
 	//affichage de la tape
-	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";s.submitValue(i,1) } else {document.getElementById(i).bgColor="red";s.submitValue(i,0)}
-	for (i=(taille_cote*taille_cote)/2;i<(taille_cote*taille_cote);i++) if (tape[i]==0) {document.getElementById(i).bgColor="black";s.submitValue(i,0) }else {document.getElementById(i).bgColor="white";s.submitValue(i,1)}
+	var delta={}
+	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";delta[i]=1 } else {document.getElementById(i).bgColor="red";delta[i]=0}
+	for (i=(taille_cote*taille_cote)/2;i<(taille_cote*taille_cote);i++) if (tape[i]==0) {document.getElementById(i).bgColor="black";delta[i]=0 }else {document.getElementById(i).bgColor="white";delta[i]=1}
 	    timer=setInterval("Horloge()", slice) 
+ s.submitDelta(delta) 
 }//fin fucntion initia()
    function Horloge() { if (wave.getMode()==u||wave.getMode()==p) return
 	clearInterval(timer)
@@ -110,6 +107,7 @@
 	}//fin for
 	score=0
 	//now we display the green/red squares while updating the score:
+	//FIXME use a delta
 	for (i=0;i<(taille_cote*taille_cote)/2;i++) if (tape[i]==1) {document.getElementById(i).bgColor="green";score++;s.submitValue(i,1)} else {document.getElementById(i).bgColor="red";s.submitValue(i,0)}
 	//maintenant on decompte le compte à rebours
 	compte--
